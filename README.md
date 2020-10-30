@@ -105,9 +105,11 @@ $ sudo apt-get purge nginx nginx-common
 
 ---
 
-### Kong 🦍
+### Kong & Konga 🦍
 
-#### Kong is an API Gateway and have many plugins...
+> Kong is an API Gateway and have many plugins...
+
+> Konga is an open-source for Kong GUI.
 
 ```
 $ sudo sh -c 'cd Kong && docker-compose up
@@ -168,6 +170,8 @@ $ curl -i -m 60 -X POST http://localhost:8001/certificates  \
 
 > _**Grafana**_ is an open-source for monitoring dashboard can add various data sources.
 
+Using below command to copy cert and key for grafana because grafana not have permission for access /etc/letsencrypt/live folder
+
 ```
 $ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/cert.pem >> ~/docker-monitoring-bundle/Monitoring/certs/cert.pem
 
@@ -180,9 +184,9 @@ $ sudo sh -c 'cd Monitoring && docker-compose up'
 
 3.  **Services** 🐯
 
-In this repository is my services in Docker hub for **FCM** messaging API you should <br />
+In this repository I used my services in Docker hub for **FCM** messaging API you should <br />
 
-change docker-compose.yml in Services folder to match your services.
+change docker-compose.yml in Services folder to match your services do you want.
 
 ```
 $ sudo sh -c 'cd Services && docker-compose up'
@@ -199,23 +203,23 @@ $ sudo sh -c 'cd Services && docker-compose up'
 
 - If you Setup Successfully
 
-  ```
-  sudo sh -c 'cd Kong && docker-compose up -d'
+```
+sudo sh -c 'cd Kong && docker-compose up -d'
 
-  sudo sh -c 'cd Monitoring && docker-compose up -d'
+sudo sh -c 'cd Monitoring && docker-compose up -d'
 
-  sudo sh -c 'cd Services && docker-compose up -d'
-  ```
+sudo sh -c 'cd Services && docker-compose up -d'
+```
 
 - If you want to down docker-compose
 
-  ```
-  sudo sh -c 'cd Kong && docker-compose down'
+```
+sudo sh -c 'cd Kong && docker-compose down'
 
-  sudo sh -c 'cd Monitoring && docker-compose down'
+sudo sh -c 'cd Monitoring && docker-compose down'
 
-  sudo sh -c 'cd Services && docker-compose down'
-  ```
+sudo sh -c 'cd Services && docker-compose down'
+```
 
 ---
 
@@ -228,3 +232,7 @@ $ sudo sh -c 'cd Services && docker-compose up'
 - 8443 : Kong HTTPS
 - 9090 : Prometheus
 - 9100 : Node_Exporter
+
+### PORTS (Not Open World)
+
+- 8001 : Kong Admin API
