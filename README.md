@@ -14,8 +14,10 @@
 
 [Docker Installation](https://docs.docker.com/engine/install/)
 
-> $ sudo apt-get update
-> $ sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
+$ sudo apt-get update
+$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+```
 
 ---
 
@@ -23,8 +25,10 @@
 
 [Docker-compose Installation](https://docs.docker.com/compose/install/)
 
-> $ sudo curl -L"https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)"-o /usr/local/bin/docker-compose
-> $ sudo chmod +x /usr/local/bin/docker-compose
+```
+$ sudo curl -L"https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)"-o /usr/local/bin/docker-compose
+$ sudo chmod +x /usr/local/bin/docker-compose
+```
 
 ---
 
@@ -32,7 +36,9 @@
 
 [Git Installation](https://www.atlassian.com/git/tutorials/install-git)
 
-> \$ sudo apt-get update; sudo apt-get install git
+```
+$ sudo apt-get update; sudo apt-get install git
+```
 
 ---
 
@@ -40,10 +46,11 @@
 
 [Nginx Installation](https://www.digitalocean.com/community/tutorials/how-to-install-nginx-on-ubuntu-18-04-quickstart)
 
-> $ sudo apt update
-> $ sudo apt install nginx
->
-> \$ sudo systemctl status nginx
+```
+$ sudo apt update
+$ sudo apt install nginx
+$ sudo systemctl status nginx
+```
 
 ---
 
@@ -51,10 +58,10 @@
 
 [Certbot Installation](https://certbot.eff.org/lets-encrypt/ubuntubionic-nginx)
 
-> $ sudo snap install core; sudo snap refresh core
-> $ sudo snap install --classic certbot
-> $ sudo ln -s /snap/bin/certbot /usr/bin/certbot
-> $ sudo certbot certonly --nginx
+$ sudo snap install core; sudo snap refresh core
+$ sudo snap install --classic certbot
+$ sudo ln -s /snap/bin/certbot /usr/bin/certbot
+$ sudo certbot certonly --nginx
 
 🚀 Then... location of certificates in /etc/letsencrypt/live/push.nextschool.io/
 
@@ -62,11 +69,13 @@
 
 ### ⚠️ !! IF YOU WANT TO UNINSTALL NGINX
 
-> \$ sudo systemctl stop nginx
+```
+$ sudo systemctl stop nginx
 
-> \$ sudo systemctl status nginx
+$ sudo systemctl status nginx
 
-> \$ sudo apt-get purge nginx nginx-common
+$ sudo apt-get purge nginx nginx-common
+```
 
 ---
 
@@ -76,7 +85,7 @@
 
 1.  **Kong** 🦍
 
-    > \$ sudo sh -c 'cd Kong && docker-compose up'
+`$ sudo sh -c 'cd Kong && docker-compose up`
 
 Wait until Kong start...
 
@@ -100,15 +109,17 @@ $ curl -i -m 60 -X POST http://localhost:8001/certificates  \
 
 2. **Monitoring** 📈
 
-> \$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/cert.pem >> ~/docker-monitoring-bundle/Monitoring/certs/cert.pem
+```
+$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/cert.pem >> ~/docker-monitoring-bundle/Monitoring/certs/cert.pem
 
-> \$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/privkey.pem >> ~/docker-monitoring-bundle/Monitoring/certs/privkey.pem
+$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/privkey.pem >> ~/docker-monitoring-bundle/Monitoring/certs/privkey.pem
 
-> \$ sudo sh -c 'cd Monitoring && docker-compose up'
+$ sudo sh -c 'cd Monitoring && docker-compose up'
+```
 
 3.  **Services** 🐯
 
-> \$ sudo sh -c 'cd Services && docker-compose up'
+`$ sudo sh -c 'cd Services && docker-compose up'`
 
 ---
 
