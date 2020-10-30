@@ -1,0 +1,59 @@
+version: '3.8'
+
+networks:
+  monitor-net:
+    name: monitor-net
+  kong-net:
+    external: true
+
+volumes:
+  prometheus-data:
+  grafana-data:
+
+services:
+  #######################################
+  # Prometheus
+  #######################################
+  prometheus:
+    image: prom/prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus-data:/prometheus
+    restart: always
+    networks:
+      - monitor-net
+      - kong-net
+    ports:
+      - 9090:9090
+
+  #######################################
+  # Grafana
+  #######################################
+  grafana:
+    image: grafana/grafana
+    depends_on:
+      - prometheus
+    environment:
+      - GF_SERVER_CERT_FILE=/etc/grafana/certs/cert.pem
+      - GF_SERVER_CERT_KEY=/etc/grafana/certs/privkey.pem
+      - GF_SERVER_PROTOCOL=https
+
+      - GF_SERVER_DOMAIN=push.nextschool.io
+    volumes:
+      - ./certs:/etc/grafana/certs:ro
+      - grafana-data:/var/lib/grafana/certs
+    networks:
+      - monitor-net
+    ports:
+      - 3000:3000
+
+  #######################################
+  # Node Exporter
+  #######################################
+  node_exporter:
+    image: prom/node-exporter:latest
+    restart: always
+    networks:
+      - monitor-net
+    ports:
+      - 9100:9100
