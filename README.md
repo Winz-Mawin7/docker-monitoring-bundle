@@ -10,6 +10,14 @@
 
 ---
 
+### 🔥 Ubuntu
+
+```
+sudo apt update && sudo apt upgrade -y
+```
+
+---
+
 ### 🐳 Docker
 
 [Docker Installation](https://docs.docker.com/engine/install/)
@@ -17,8 +25,23 @@
 Ubuntu
 
 ```
-$ sudo apt-get update
-$ sudo apt-get install docker-ce docker-ce-cli containerd.io
+sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+sudo add-apt-repository \
+   "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+
+sudo apt-get update
+
+sudo apt-get install docker-ce docker-ce-cli containerd.io
 ```
 
 ---
@@ -30,8 +53,8 @@ $ sudo apt-get install docker-ce docker-ce-cli containerd.io
 Ubuntu
 
 ```
-$ sudo curl -L"https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)"-o /usr/local/bin/docker-compose
-$ sudo chmod +x /usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.27.4/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
 ```
 
 ---
@@ -45,7 +68,7 @@ $ sudo chmod +x /usr/local/bin/docker-compose
 Ubuntu
 
 ```
-$ sudo apt-get update; sudo apt-get install git
+sudo apt-get install git
 ```
 
 ---
@@ -59,9 +82,30 @@ $ sudo apt-get update; sudo apt-get install git
 Ubuntu
 
 ```
-$ sudo apt update
-$ sudo apt install nginx
-$ sudo systemctl status nginx
+sudo apt install nginx
+sudo systemctl status nginx
+```
+
+---
+
+### 🐌 Set up Domain Name for SSL
+
+```
+sudo vim /etc/nginx/sites-available/default
+```
+
+Configure server name
+
+```
+server {
+        listen 80;
+        listen [::]:80;
+
+        server_name {DOMAIN_NAME};
+
+        root /var/www/html;
+        index index.html;
+}
 ```
 
 ---
@@ -75,33 +119,41 @@ $ sudo systemctl status nginx
 Ubuntu
 
 ```
-$ sudo snap install core; sudo snap refresh core
-$ sudo snap install --classic certbot
-$ sudo ln -s /snap/bin/certbot /usr/bin/certbot
-$ sudo certbot certonly --nginx
+sudo snap install core; sudo snap refresh core
+sudo snap install --classic certbot
+sudo ln -s /snap/bin/certbot /usr/bin/certbot
+sudo certbot certonly --nginx
 ```
 
-🚀 Then... location of certificates in /etc/letsencrypt/live/DOMAIN.NAME/
+🚀 Then... location of certificates in /etc/letsencrypt/live/{{DOMAIN_NAME}}/
 
 ---
 
 ### ⚠️ !! IF YOU WANT TO UNINSTALL NGINX
 
 ```
-$ sudo systemctl stop nginx
+sudo systemctl stop nginx
 
-$ sudo systemctl status nginx
+sudo systemctl status nginx
 
-$ sudo apt-get purge nginx nginx-common
+sudo apt-get purge nginx nginx-common
 ```
 
 ---
 
 ### 👽 Docker-monitoring-bundle
 
-    git clone: https://github.com/Winz-Mawin7/docker-monitoring-bundle
+    git clone https://github.com/Winz-Mawin7/docker-monitoring-bundle.git ~/docker-monitoring-bundle
 
     cd docker-monitoring-bundle
+
+---
+
+### 🐙 Docker Swarm
+
+```
+sudo docker swarm init
+```
 
 ---
 
@@ -112,7 +164,7 @@ $ sudo apt-get purge nginx nginx-common
 > Konga is an open-source for Kong GUI.
 
 ```
-$ sudo sh -c 'cd Kong && docker-compose up
+sudo sh -c 'cd Kong && docker-compose up -d'
 ```
 
 - You can change ENV variables
@@ -123,44 +175,62 @@ $ sudo sh -c 'cd Kong && docker-compose up
 
   _*Default is "kong"*_
 
-🧎🏻‍♂️ Wait until Kong start...
+🤔 Wait until Kong start...
 
-- Config by Konga GUI: PORT 1337, http://localhost:1337
+---
+
+### Services 🐯
+
+In this repository I used my services in Docker hub for **FCM** messaging API you should <br />
+
+edit docker-compose.yml in Services folder to match your services do you want.
+
+_*I used Express Prom Bundle to Export metrics*_
+
+```
+sudo sh -c 'cd Services && docker-compose up -d'
+```
+
+---
+
+**Configure Kong Services** 🙊
+
+- **Configure via Konga GUI: PORT 1337**, http://localhost:1337
 
   - Add Services
   - Add Routes
   - Add Certificate
 
-- Config by REST API
+- **Config via REST API**
 
 **Add Services**
 
 ```
-$ curl -i -X POST http://localhost:8001/services/ \
---data 'name=service_name' \
---data 'url=http://example.domain:8088'
+curl -i -X POST http://localhost:8001/services/ \
+--data 'name={SERVICE_NAME}' \
+--data 'url=http://{SERVICE_URI}:{PORT}'
 ```
 
 **Add Routes**
 
 ```
-$ curl -i -X POST http://localhost:8001/services/service_name/routes/ \
---data 'name=route_name' \
+curl -i -X POST http://localhost:8001/services/{SERVICE_NAME}/routes/ \
+--data 'name={ROUTE_NAME}' \
 --data 'paths[]=/'
 ```
 
 **Add Certificate by curl to API**
 
 ```
-$ curl -i -m 60 -X POST http://localhost:8001/certificates  \
--F "cert=$(sudo cat /etc/letsencrypt/live/DOMAIN.NAME/cert.pem)" \
--F "key=\$(sudo cat /etc/letsencrypt/live/DOMAIN.NAME/privkey.pem)" \
--F "snis=['DOMAIN.NAME}]"
+curl -i -m 60 -X POST http://localhost:8001/certificates  \
+-F "cert=$(sudo cat /etc/letsencrypt/live/{DOMAIN_NAME}/cert.pem)" \
+-F "key=$(sudo cat /etc/letsencrypt/live/{DOMAIN_NAME}/privkey.pem)" \
+-F "snis=['{DOMAIN_NAME}']"
 ```
 
 ---
 
-2. **Monitoring** 📈
+### Monitoring 📈
 
 #### Prometheus & Exporter & Grafana
 
@@ -173,35 +243,28 @@ $ curl -i -m 60 -X POST http://localhost:8001/certificates  \
 Using below command to copy cert and key for grafana because grafana not have permission for access /etc/letsencrypt/live folder
 
 ```
-$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/cert.pem >> ~/docker-monitoring-bundle/Monitoring/certs/cert.pem
+sudo cat /etc/letsencrypt/live/{DOMAIN_NAME}/cert.pem >> ~/docker-monitoring-bundle/Monitoring/certs/cert.pem
 
-$ sudo cat /etc/letsencrypt/live/DOMAIN.NAME/privkey.pem >> ~/docker-monitoring-bundle/Monitoring/certs/privkey.pem
+sudo cat /etc/letsencrypt/live/{DOMAIN_NAME}/privkey.pem >> ~/docker-monitoring-bundle/Monitoring/certs/privkey.pem
 
-$ sudo sh -c 'cd Monitoring && docker-compose up'
+sudo sh -c 'cd Monitoring && docker-compose up -d'
 ```
 
 ---
 
-3.  **Services** 🐯
+### 😻 Finally
 
-In this repository I used my services in Docker hub for **FCM** messaging API you should <br />
+- Grafana https://localhost:3000
 
-change docker-compose.yml in Services folder to match your services do you want.
-
-```
-$ sudo sh -c 'cd Services && docker-compose up'
-```
-
----
-
-### Finally
-
-- Grafana
-
-  - Add Data Source
+  - Add Data Source Prometheus.
+    - URL: prometheus:9090
   - Import JSON file from folder Monitoring/Dashboard.json
 
-- If you Setup Successfully
+---
+
+### 😎 Bonus
+
+If setup already done you can run all docker-compose by.
 
 ```
 sudo sh -c 'cd Kong && docker-compose up -d'
@@ -211,7 +274,7 @@ sudo sh -c 'cd Monitoring && docker-compose up -d'
 sudo sh -c 'cd Services && docker-compose up -d'
 ```
 
-- If you want to down docker-compose
+- If you want to down all docker-compose `option -v` for remove volume
 
 ```
 sudo sh -c 'cd Kong && docker-compose down'
