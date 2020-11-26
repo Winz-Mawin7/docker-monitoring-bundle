@@ -90,6 +90,8 @@ sudo systemctl status nginx
 
 ### 🐌 Set up Domain Name for SSL
 
+For using SSL (Not only Localhost) _**must**_ buy Domain name from a provider.
+
 ```
 sudo vim /etc/nginx/sites-available/default
 ```
