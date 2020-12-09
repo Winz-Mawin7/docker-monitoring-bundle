@@ -11,6 +11,8 @@ services:
   node-fcm:
     image: winz7/node-fcm
     restart: always
+    environment:
+      - TZ=Asia/Bangkok
     networks:
       - kong-net
     ports:
