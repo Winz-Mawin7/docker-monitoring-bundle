@@ -290,6 +290,7 @@ sudo sh -c 'cd Services && docker-compose down'
 
 ### PORTS (Open World)
 
+- 1337 : Konga
 - 3000 : Grafana
 - 5432 : Postgresql
 - 8000 : Kong HTTP
